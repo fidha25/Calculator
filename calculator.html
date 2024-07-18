@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .calculator {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        .display {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 18px;
+            text-align: right;
+            box-sizing: border-box;
+        }
+        .button-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        button {
+            flex: 1;
+            padding: 10px;
+            margin: 2px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .button-zero {
+            flex: 2;
+        }
+        .button-wide {
+            flex: 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display" id="display"></div>
+        <div class="button-row">
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
+            <button onclick="setOperation('/')">/</button>
+        </div>
+        <div class="button-row">
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
+            <button onclick="setOperation('*')">*</button>
+        </div>
+        <div class="button-row">
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
+            <button onclick="setOperation('-')">-</button>
+        </div>
+        <div class="button-row">
+            <button class="button-zero" onclick="appendNumber('0')">0</button>
+            <button onclick="clearDisplay()">C</button>
+            <button onclick="setOperation('+')">+</button>
+        </div>
+        <div class="button-row">
+            <button class="button-wide" onclick="calculateResult()">=</button>
+            <button class="button-wide" onclick="removeLast()">⌫</button>
+        </div>
+    </div>
+    <script>
+        let display = document.getElementById('display');
+        let firstNumber = '';
+        let secondNumber = '';
+        let operation = null;
+
+        function appendNumber(number) {
+            if (operation === null) {
+                firstNumber += number;
+                display.textContent = firstNumber;
+            } else {
+                secondNumber += number;
+                display.textContent = firstNumber + ' ' + operation + ' ' + secondNumber;
+            }
+        }
+
+        function setOperation(op) {
+            if (firstNumber === '') return;
+            operation = op;
+            display.textContent = firstNumber + ' ' + operation;
+        }
+
+        function clearDisplay() {
+            firstNumber = '';
+            secondNumber = '';
+            operation = null;
+            display.textContent = '';
+        }
+
+        function removeLast() {
+            if (operation === null) {
+                firstNumber = firstNumber.slice(0, -1);
+                display.textContent = firstNumber;
+            } else if (secondNumber === '') {
+                operation = null;
+                display.textContent = firstNumber;
+            } else {
+                secondNumber = secondNumber.slice(0, -1);
+                display.textContent = firstNumber + ' ' + operation + ' ' + secondNumber;
+            }
+        }
+
+        function calculateResult() {
+            let result;
+            if (operation === null || secondNumber === '') return;
+
+            switch (operation) {
+                case '+':
+                    result = parseFloat(firstNumber) + parseFloat(secondNumber);
+                    break;
+                case '-':
+                    result = parseFloat(firstNumber) - parseFloat(secondNumber);
+                    break;
+                case '*':
+                    result = parseFloat(firstNumber) * parseFloat(secondNumber);
+                    break;
+                case '/':
+                    if (secondNumber === '0') {
+                        result = 'Cannot divide by zero';
+                    } else {
+                        result = parseFloat(firstNumber) / parseFloat(secondNumber);
+                    }
+                    break;
+                default:
+                    return;
+            }
+
+            display.textContent = result;
+            firstNumber = result.toString();
+            secondNumber = '';
+            operation = null;
+        }
+    </script>
+</body>
+</html>
